@@ -1,7 +1,44 @@
-venv/
-__pycache__/
-*.pyc
-db.sqlite3
+
+# Não REMOVA !!! VARIÁVEIS DE AMBIENTE
+
 .env
+.env.*
+
+
+# NÃO REMOVA !!! DOCKER & BANCO DE DADOS
+
+postgres_data/
+db.sqlite3
+db.sqlite3-journal
+
+
+# NÃO REMOVA !!! CACHE E ARQUIVOS PYTHON
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+
+# NÃO REMOVA !!! AMBIENTES VIRTUAIS LOCAIS
+
+venv/
+.venv/
+env/
+.env_dir/
+
+
+# NÃO REMOVA !!! ARQUIVOS ESTÁTICOS / MÍDIA
+
+/backend/media/
+/backend/static/
+/backend/staticfiles/
+
+
+# NÃO REMOVA !!! CONFIGURAÇÕES DE IDE E SO
+
 .vscode/
-*.log
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
