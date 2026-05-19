@@ -1,46 +1,7 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[codz]
-*$py.class
-
-# Django
-*.log
-db.sqlite3
-db.sqlite3-journal
-local_settings.py
-
-# Environments
-.env
-.envrc
-.venv
-env/
 venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Python build
-build/
-dist/
-*.egg-info/
-.eggs/
-
-# Coverage / cache
-.coverage
-.pytest_cache/
-.cache
-.mypy_cache/
-.ruff_cache/
-
-# IDEs
+__pycache__/
+*.pyc
+db.sqlite3
+.env
 .vscode/
-.idea/
-.spyderproject
-.spyproject
-.ropeproject
-
-# Jupyter
-.ipynb_checkpoints
-
-# Misc
-tempCodeRunnerFile.py
+*.log
