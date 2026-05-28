@@ -4,3 +4,5 @@ NÃO REMOVA NADA, APENAS ADICIONE!
 A partir de agora, o padrão oficial de submissão de código exigirá o uso de Pull Requests (PRs). Utilizem o PR atual do Thalles como modelo
 O comando git push direto nas branches de integração permanece tecnicamente liberado. 
 No entanto, o desenvolvedor que optar por contornar a revisão via PR e introduzir regressões ou quebra de build no repositório assumirá a responsabilidade integral pela resolução imediata do incidente (hotfix), sem alocação de esforço adicional da equipe.
+ 
+ 
