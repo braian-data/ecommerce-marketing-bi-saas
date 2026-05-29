@@ -98,4 +98,33 @@ class EventoBI(models.Model):
     payload_contexto = models.JSONField(default=dict)
 
     class Meta:
-        db_table = 'evento_bi'
+        db_table = 'evento_bi'  
+
+# SISTEMA DE CARRINHO DE COMPRAS FEITO DE ACORDO COM AS REGRAS DE ISOLAMENTO DO VENDEDOR
+
+class Carrinho(models.Model):
+    loja = models.ForeignKey(Loja, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(ClienteFinal, on_delete=models.CASCADE)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_atualizacao = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'carrinho'
+        unique_together = ('loja', 'cliente')
+
+    def __str__(self):
+        return f"Carrinho {self.id} - Cliente: {self.cliente_id} na Loja {self.loja_id}"
+
+
+class ItemCarrinho(models.Model):
+    carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, related_name='itens')
+    sku = models.ForeignKey(VariacaoSKU, on_delete=models.CASCADE)
+    quantidade = models.IntegerField(default=1)
+    data_adicionado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'item_carrinho'
+        unique_together = ('carrinho', 'sku')
+
+    def __str__(self):
+        return f"Item {self.sku_id} (Qtd: {self.quantidade}) no Carrinho {self.carrinho_id}"
