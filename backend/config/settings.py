@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'api',
+    'rest_framework',  # Framework de API
+    'api',             # O seu aplicativo de negócios (OBRIGATÓRIO)
 ]
 
 MIDDLEWARE = [
