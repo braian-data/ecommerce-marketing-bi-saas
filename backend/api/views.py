@@ -5,8 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
 from .models import VariacaoSKU, Pedido, ItemPedido, ClienteFinal, Loja
-
+from .serializers import LojaSerializer
 @api_view(['POST'])
 def realizar_compra(request):
     id_sku = request.data.get('id_sku')
@@ -146,3 +147,7 @@ class CheckoutAPIView(APIView):
             return Response({"erro": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"erro": "Erro interno ao processar o checkout."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class LojaViewSet(ModelViewSet):
+    queryset = Loja.objects.all()
+    serializer_class = LojaSerializer

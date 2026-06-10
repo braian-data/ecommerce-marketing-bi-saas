@@ -4,8 +4,10 @@ URL configuration for config project.
 from django.contrib import admin
 from django.urls import path
 from api import views
-from api.views import CheckoutAPIView
+from api.views import CheckoutAPIView, LojaViewSet
 from api.auth_views import register_user, login_user
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,4 +15,16 @@ urlpatterns = [
     path('api/checkout/', CheckoutAPIView.as_view(), name='api_checkout'),
     path('api/register/', register_user, name='register_user'),
     path('api/login/', login_user, name='login_user'),
+
+    path('api/lojas/', LojaViewSet.as_view({
+        'get': 'list',
+        'post': 'create'
+    }), name='loja-list-create'),
+
+    path('api/lojas/<int:pk>/', LojaViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'patch': 'partial_update',
+        'delete': 'destroy'
+    }), name='loja-detail'),
 ]
