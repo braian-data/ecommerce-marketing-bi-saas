@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Carrinho, Loja
+from .models import Carrinho, Loja, ContaVendedor
 
 class CheckoutSerializer(serializers.Serializer):
     carrinho_id = serializers.IntegerField(required=True)
@@ -23,3 +23,18 @@ class CheckoutSerializer(serializers.Serializer):
         # Injeta o objeto carrinho validado no dicionário de dados para uso na View
         data['carrinho_objeto'] = carrinho
         return data
+class LojaSerializer(serializers.ModelSerializer):
+    conta = serializers.PrimaryKeyRelatedField(
+        queryset= ContaVendedor.objects.all()
+    )
+
+    class Meta:
+        model = Loja
+        fields = [
+            'id',
+            'conta',
+            'nome_loja',
+            'cnpj',
+            'configuracoes_marketing',
+            'subdominio',
+        ]
