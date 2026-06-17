@@ -1,6 +1,7 @@
 # Projeto Integrador: SaaS E-Commerce (Multi-Tenant)
 
 Este projeto é a entrega final da disciplina de Laboratório de Desenvolvimento de Software. Consiste numa plataforma Web B2B2C com arquitetura em camadas, separação de responsabilidades (Multi-Tenant) e autenticação via JWT.
+Projeto em andamento com uma equipe de 15 colaboradores
 
 ## 🛠 Tecnologias Utilizadas
 * **Backend:** Python, Django REST Framework, SQLite
