@@ -1,4 +1,6 @@
 from django.db import models
+from .managers import TenantManager
+
 
 class Plano(models.Model):
     nome = models.CharField(max_length=100)
@@ -10,6 +12,7 @@ class Plano(models.Model):
     class Meta:
         db_table = 'plano'
 
+
 class ContaVendedor(models.Model):
     plano = models.ForeignKey(Plano, on_delete=models.PROTECT)
     email_adm = models.EmailField(unique=True)
@@ -18,6 +21,7 @@ class ContaVendedor(models.Model):
 
     class Meta:
         db_table = 'conta_vendedor'
+
 
 class Loja(models.Model):
     conta = models.ForeignKey(ContaVendedor, on_delete=models.CASCADE)
@@ -29,6 +33,7 @@ class Loja(models.Model):
     class Meta:
         db_table = 'loja'
 
+
 class ClienteFinal(models.Model):
     cpf = models.CharField(max_length=14, primary_key=True)
     nome = models.CharField(max_length=150)
@@ -38,7 +43,10 @@ class ClienteFinal(models.Model):
     class Meta:
         db_table = 'cliente_final'
 
+
 class Produto(models.Model):
+    objects = TenantManager()
+
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     nome = models.CharField(max_length=150)
     categoria = models.CharField(max_length=100)
@@ -47,25 +55,28 @@ class Produto(models.Model):
     class Meta:
         db_table = 'produto'
 
+
 class VariacaoSKU(models.Model):
     id_sku = models.CharField(max_length=50, primary_key=True)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='variacoes')
     preco_venda = models.DecimalField(max_digits=10, decimal_places=2)
-    custo = models.DecimalField(max_digits=10, decimal_places=2) # Necessário para Margem/ROI (Regra 2)
+    custo = models.DecimalField(max_digits=10, decimal_places=2)
     quantidade_estoque = models.IntegerField(default=0)
-    atributo = models.JSONField(default=dict) # Armazena Cor, Tamanho, etc.
+    atributo = models.JSONField(default=dict)
 
     class Meta:
         db_table = 'variacao_sku'
 
+
 class Pedido(models.Model):
+    objects = TenantManager()
+
     cliente = models.ForeignKey(ClienteFinal, on_delete=models.PROTECT)
     loja = models.ForeignKey(Loja, on_delete=models.PROTECT)
     data_hora = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, default='AGUARDANDO_PAGAMENTO')
     valor_total = models.DecimalField(max_digits=10, decimal_places=2)
-    
-    # Telemetria de Marketing e BI (Regra 4)
+
     utm_source = models.CharField(max_length=100, blank=True, null=True)
     utm_medium = models.CharField(max_length=100, blank=True, null=True)
     utm_campaign = models.CharField(max_length=100, blank=True, null=True)
@@ -73,30 +84,29 @@ class Pedido(models.Model):
     class Meta:
         db_table = 'pedido'
 
+
 class ItemPedido(models.Model):
-    # O Django gera automaticamente a PK 'id' única para esta tabela pivô, 
-    # permitindo múltiplos itens diferentes no mesmo pedido (N:M).
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
     sku = models.ForeignKey(VariacaoSKU, on_delete=models.PROTECT)
     quantidade = models.IntegerField()
-    
-    # Regra 3: Histórico imutável de valores no momento da compra
+
     preco_venda_congelado = models.DecimalField(max_digits=10, decimal_places=2)
     preco_custo_congelado = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         db_table = 'item_pedido'
 
+
 class Pagamento(models.Model):
-    # Entidade adicionada para suprir a Regra 3 (PIX, Boleto, Cartão e tempos limite)
     pedido = models.OneToOneField(Pedido, on_delete=models.PROTECT, related_name='pagamento')
-    metodo_pagamento = models.CharField(max_length=50) # PIX, BOLETO, CARTAO
-    status_transacao = models.CharField(max_length=50) # PENDENTE, APROVADO, RECUSADO
+    metodo_pagamento = models.CharField(max_length=50)
+    status_transacao = models.CharField(max_length=50)
     id_transacao_gateway = models.CharField(max_length=255, unique=True, blank=True, null=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'pagamento'
+
 
 class Imagem(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='imagens')
@@ -106,19 +116,23 @@ class Imagem(models.Model):
     class Meta:
         db_table = 'imagem'
 
+
 class EventoBI(models.Model):
+    objects = TenantManager()
+
     pedido = models.ForeignKey(Pedido, on_delete=models.SET_NULL, null=True, blank=True)
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE)
-    tipo_evento = models.CharField(max_length=100) # Page_View, View_Item, Add_to_Cart, etc.
+    tipo_evento = models.CharField(max_length=100)
     data_hora = models.DateTimeField(auto_now_add=True)
-    payload_contexto = models.JSONField(default=dict) # Sessão, Dispositivo, User-Agent (Regra 4)
+    payload_contexto = models.JSONField(default=dict)
 
     class Meta:
-        db_table = 'evento_bi'  
+        db_table = 'evento_bi'
 
-# SISTEMA DE CARRINHO DE COMPRAS (ISOLAMENTO MULTI-TENANT)
 
 class Carrinho(models.Model):
+    objects = TenantManager()
+
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE)
     cliente = models.ForeignKey(ClienteFinal, on_delete=models.CASCADE)
     data_criacao = models.DateTimeField(auto_now_add=True)
@@ -130,6 +144,7 @@ class Carrinho(models.Model):
 
     def __str__(self):
         return f"Carrinho {self.id} - Cliente: {self.cliente_id} na Loja {self.loja_id}"
+
 
 class ItemCarrinho(models.Model):
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, related_name='itens')
