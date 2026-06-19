@@ -9,6 +9,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from .models import VariacaoSKU, Pedido, ItemPedido, ClienteFinal, Loja
 from .serializers import LojaSerializer
+from .models import Produto
+from .serializers import ProdutoSerializer
 
 
 @api_view(['POST'])
@@ -202,3 +204,7 @@ class LojaViewSet(ModelViewSet):
             return Loja.objects.filter(id=loja.id)
 
         return Loja.objects.none()
+
+class ProdutoViewSet(ModelViewSet):
+    queryset = Produto.objects.all()
+    serializer_class = ProdutoSerializer
