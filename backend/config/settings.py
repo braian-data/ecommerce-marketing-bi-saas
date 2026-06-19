@@ -22,7 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Framework de API
-    'api',             # O seu aplicativo de negócios (OBRIGATÓRIO)
+    'api',    
+    'tracking',         
 ]
 
 MIDDLEWARE = [
