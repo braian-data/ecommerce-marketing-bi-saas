@@ -7,10 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 
-from .models import VariacaoSKU, Pedido, ItemPedido, ClienteFinal, Loja
-from .serializers import LojaSerializer
-from .models import Produto
-from .serializers import ProdutoSerializer
+from .models import VariacaoSKU, Pedido, ItemPedido, ClienteFinal, Loja, Produto
+from .serializers import LojaSerializer, ProdutoSerializer
 
 
 @api_view(['POST'])

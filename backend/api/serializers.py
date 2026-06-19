@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Carrinho, Loja, ContaVendedor
-from .models import Produto
+from .models import Carrinho, Loja, ContaVendedor, Produto
 
 class CheckoutSerializer(serializers.Serializer):
     carrinho_id = serializers.IntegerField(required=True)
