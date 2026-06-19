@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Carrinho, Loja, ContaVendedor
+from .models import Carrinho, Loja, ContaVendedor, Produto
 
 class CheckoutSerializer(serializers.Serializer):
     carrinho_id = serializers.IntegerField(required=True)
@@ -38,3 +38,8 @@ class LojaSerializer(serializers.ModelSerializer):
             'configuracoes_marketing',
             'subdominio',
         ]
+
+class ProdutoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Produto
+        fields = '__all__'
