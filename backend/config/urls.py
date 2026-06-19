@@ -2,7 +2,7 @@
 URL configuration for config project.
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path , include
 from api import views
 from api.views import CheckoutAPIView, LojaViewSet, ProdutoViewSet
 from api.auth_views import register_user, login_user
@@ -39,4 +39,7 @@ urlpatterns = [
         'patch': 'partial_update',
         'delete': 'destroy'
     }), name='produto-detail'),
+
+    path('api/tracking/', include('tracking.urls')),
+
 ]
