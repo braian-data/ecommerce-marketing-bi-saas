@@ -3,3 +3,7 @@ psycopg2-binary==2.9.9
 django-environ==0.11.2
 gunicorn==21.2.0
 djangorestframework
+djangorestframework-simplejwt
+faker==18.3.0
+django-cors-headers
+Pillow>=10.0.0Pillow>=10.2.0

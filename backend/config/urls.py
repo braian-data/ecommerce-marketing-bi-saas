@@ -1,24 +1,28 @@
-"""
-URL configuration for config project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
-from django.urls import path
 from api.views import CheckoutAPIView
+from django.urls import path
+from django.conf import settings
+from api.views import VitrineGlobalAPIView
+from django.conf.urls.static import static
+from api.views import ProdutoLojaAPIView # Importe a classe
+from api.views import (
+    CheckoutAPIView, RegistroVendedorAPIView, CustomLoginAPIView, 
+    PlanoListAPIView, LojaManagerAPIView, LojaDetailAPIView, RegistroClienteView, ProdutoListAPIView
+)
+from api.views import SimularDepositoAPIView, CarrinhoAPIView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Correção aplicada aqui
-    path('api/checkout/', CheckoutAPIView.as_view(), name='api_checkout'),
+    path('api/auth/login/', CustomLoginAPIView.as_view()),
+    path('api/registro-vendedor/', RegistroVendedorAPIView.as_view()),
+    path('api/registro-cliente/', RegistroClienteView.as_view()),
+    path('api/planos/', PlanoListAPIView.as_view()),
+    path('api/lojas/', LojaManagerAPIView.as_view(), name='loja-list-create'),
+    path('api/checkout/', CheckoutAPIView.as_view()),
+    path('api/produtos/', ProdutoListAPIView.as_view()),
+    path('api/lojas/<int:pk>/', LojaDetailAPIView.as_view(), name='loja-detail'),
+    path('api/vitrine/', VitrineGlobalAPIView.as_view(), name='vitrine-global'),
+    path('api/lojas/<int:loja_id>/produtos/', ProdutoLojaAPIView.as_view(), name='loja-produtos'),
+    path('api/carteira/deposito/', SimularDepositoAPIView.as_view(), name='simular-deposito'),
+    path('api/carrinho/', CarrinhoAPIView.as_view(), name='gestao-carrinho'),
+    path('api/checkout/', CheckoutAPIView.as_view(), name='checkout'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

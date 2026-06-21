@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: vooap_db
+    container_name: vooap_db_acelerado
     environment:
       POSTGRES_DB: vooap_db
       POSTGRES_USER: vooap_user
@@ -11,20 +11,34 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
-      - "54324:5432"
+      - "54325:5432"
 
   backend:
     build: ./backend
-    container_name: vooap_backend
+    container_name: vooap_backend_acelerado
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend:/app
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - DATABASE_URL=postgres://vooap_user:vooap_pass@db:5432/vooap_db
     depends_on:
       - db
 
+  frontend:
+    build: ./frontend
+    container_name: vooap_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
+
