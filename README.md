@@ -35,6 +35,19 @@ Topologia de Rede e Acessos
 Após a execução bem-sucedida dos comandos acima, o ecossistema estará a operar nos seguintes endereços locais:
 Painel do Vendedor / Cliente Final (Frontend):``` [http://localhost:3000](http://localhost:3000/login) ```
 <img width="1136" height="1042" alt="image" src="https://github.com/user-attachments/assets/4dc19913-eb64-458e-a699-b5f1bf7f573d" />
+<img width="1136" height="1042" alt="image" src="https://github.com/user-attachments/assets/2d89e99b-7084-436c-9d2d-f07739f20ae2" />
+<img width="1136" height="1042" alt="image" src="https://github.com/user-attachments/assets/d7f3a32a-2cca-4e32-9eef-e50748d56a19" />
+<img width="1598" height="965" alt="image" src="https://github.com/user-attachments/assets/968b8dbb-c8f2-449a-925a-d71b092998c3" />
+<img width="1598" height="965" alt="image" src="https://github.com/user-attachments/assets/aa235aaa-f354-4f28-a598-ba274391510c" />
+<img width="1598" height="965" alt="image" src="https://github.com/user-attachments/assets/e28c393a-0272-430b-bce4-3a94a4f139ff" />
+<img width="1598" height="965" alt="image" src="https://github.com/user-attachments/assets/b617b9e6-c413-4c9c-b0c6-c39a85f07295" />
+<img width="1598" height="965" alt="image" src="https://github.com/user-attachments/assets/67c850b0-4730-4ab1-a1bb-cd3c8b0d02a4" />
+<img width="1598" height="965" alt="image" src="https://github.com/user-attachments/assets/748f7830-eaeb-4b29-9c33-e1520b1c4141" />
+<img width="1814" height="951" alt="image" src="https://github.com/user-attachments/assets/4031c274-06d9-42f2-be52-b8004303e3bb" />
+<img width="1814" height="951" alt="image" src="https://github.com/user-attachments/assets/c6ff5d55-739f-4dbf-ad08-1c69f0a1e083" />
+<img width="1814" height="951" alt="image" src="https://github.com/user-attachments/assets/b5991272-c4ba-4c18-991c-1541fd7cabcd" />
+<img width="1814" height="951" alt="image" src="https://github.com/user-attachments/assets/a74c778a-9832-4166-869d-14bee820870e" />
+
 
 
 
