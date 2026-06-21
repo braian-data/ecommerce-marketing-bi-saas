@@ -1,4 +1,4 @@
-# 🚀 Projeto Integrador: SaaS E-Commerce (Multi-Tenant)
+# Projeto Integrador: SaaS E-Commerce (Multi-Tenant)
 
 Plataforma Web B2B2C desenvolvida para a disciplina de Laboratório de Desenvolvimento de Software. O sistema utiliza uma arquitetura multi-tenant, permitindo que vários lojistas gerenciem seus próprios catálogos e vendas de forma isolada e segura.
 
@@ -6,7 +6,7 @@ Plataforma Web B2B2C desenvolvida para a disciplina de Laboratório de Desenvolv
 
 ---
 
-## 📸 Galeria do Projeto
+## Galeria do Projeto
 <details>
 <summary>Clique para visualizar as telas do sistema</summary>
 
@@ -23,7 +23,7 @@ Plataforma Web B2B2C desenvolvida para a disciplina de Laboratório de Desenvolv
 
 ---
 
-## 🛠 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 * **Backend:** Python, Django REST Framework, PostgreSQL
 * **Frontend:** React, Next.js, TailwindCSS
@@ -33,12 +33,13 @@ Plataforma Web B2B2C desenvolvida para a disciplina de Laboratório de Desenvolv
 
 ---
 
-## ⚙️ Como Executar o Projeto
+## Como Executar o Projeto
 
 Certifique-se de ter o **Docker** e o **Docker Compose** instalados na sua máquina.
 
 ### 1. Clonar e subir o ambiente
 ```bash
 git clone [https://github.com/braian-data/ecommerce-marketing-bi-saas.git](https://github.com/braian-data/ecommerce-marketing-bi-saas.git)
+
 cd ecommerce-marketing-bi-saas
 docker compose up -d --build
