@@ -43,3 +43,57 @@ git clone [https://github.com/braian-data/ecommerce-marketing-bi-saas.git](https
 
 cd ecommerce-marketing-bi-saas
 docker compose up -d --build
+```
+Inicializar o Banco de Dados (Seed)
+
+# Rodar migrações
+docker compose exec backend python manage.py migrate
+
+# Popular os planos iniciais (necessário para o registro)
+docker compose exec backend python manage.py shell -c "
+from api.models import Plano; 
+Plano.objects.get_or_create(id=1, defaults={'nome': 'Premium', 'limite_lojas': 10, 'limite_imagens': 100, 'limite_api': 1000, 'espaco_armazenamento': 5000})"
+
+Acessos Locais
+Frontend: http://localhost:3000/login
+ESCREVA PASSO A PASSO DESDE A CRIAÇÃO DAS CONTAS, CRIAÇÃO DE LOJA, COMPRAS, FATURAMENTO E TODA APLICAÇÃO DE FORMA LINEAR PARA EFETUAR OS TESTES
+
+Estrutura do Projeto
+ADICIONE A ESTRUTURA AQUI
+
+Colaboradores
+Projeto desenvolvido por uma equipe dedicada de 15 estudantes.
+ADICIONAR COLABORADORES
+PO+DEV:
+SM+DEV:
+DEVS: , , ,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
