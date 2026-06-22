@@ -64,8 +64,8 @@ ADICIONE A ESTRUTURA AQUI
 Colaboradores
 Projeto desenvolvido por uma equipe dedicada de 15 estudantes.
 ADICIONAR COLABORADORES
-PO+DEV:
-SM+DEV:
+PO+DEV: Braian Soares Mesquita (https://github.com/braian-data)
+SM+DEV: Caio Camos (https://github.com/raiocamos)
 DEVS: , , ,
 
 
