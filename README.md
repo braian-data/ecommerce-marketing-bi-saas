@@ -50,9 +50,9 @@ Inicializar o Banco de Dados (Seed)
 docker compose exec backend python manage.py migrate
 
 # Popular os planos iniciais (necessário para o registro)
-docker compose exec backend python manage.py shell -c "
-from api.models import Plano; 
-Plano.objects.get_or_create(id=1, defaults={'nome': 'Premium', 'limite_lojas': 10, 'limite_imagens': 100, 'limite_api': 1000, 'espaco_armazenamento': 5000})"
+```
+docker compose exec backend python manage.py shell -c "from api.models import Plano; Plano.objects.get_or_create(id=1, defaults={'nome': 'Premium', 'limite_lojas': 10, 'limite_imagens': 100, 'limite_api': 1000, 'espaco_armazenamento': 5000})"
+```
 
 Acessos Locais
 Frontend: http://localhost:3000/login
