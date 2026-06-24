@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from .models import Produto, Plano, Pedido
 from .models import (
     Carrinho, Loja, ContaVendedor, ClienteFinal, 
     EventoBI, Plano, Produto, VariacaoSKU
@@ -8,7 +9,7 @@ class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pedido # Certifique-se de importar o modelo Pedido no topo
         fields = '__all__'
-        
+
 class CheckoutSerializer(serializers.Serializer):
     carrinho_id = serializers.IntegerField(required=True)
     metodo_pagamento = serializers.ChoiceField(choices=['PIX', 'BOLETO', 'CARTAO'], required=True)
