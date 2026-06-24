@@ -1,3 +1,20 @@
+
+Destruição: docker compose -p novo_projeto down -v
+
+Remoção: cd .. && rm -rf ecommerce-marketing-bi-saas
+
+Extração: git clone https://github.com/braian-data/ecommerce-marketing-bi-saas.git
+
+Construção: cd ecommerce-marketing-bi-saas && docker compose -p novo_projeto up -d --build
+
+Migração: docker compose -p novo_projeto exec backend python manage.py migrate
+
+População: docker compose -p novo_projeto exec backend python manage.py seed_dados
+
+
+
+
+
 # Projeto Integrador: SaaS E-Commerce (Multi-Tenant)
 
 Plataforma Web B2B2C desenvolvida para a disciplina de Laboratório de Desenvolvimento de Software. O sistema utiliza uma arquitetura multi-tenant, permitindo que vários lojistas gerenciem seus próprios catálogos e vendas de forma isolada e segura.
