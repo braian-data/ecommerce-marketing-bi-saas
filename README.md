@@ -42,7 +42,9 @@ Certifique-se de ter o **Docker** e o **Docker Compose** instalados na sua máqu
 git clone [https://github.com/braian-data/ecommerce-marketing-bi-saas.git](https://github.com/braian-data/ecommerce-marketing-bi-saas.git)
 
 cd ecommerce-marketing-bi-saas
-docker compose up -d --build
+docker compose -p novo_projeto up -d --build
+docker compose -p novo_projeto ps
+docker compose -p novo_projeto exec backend python manage.py migrate
 ```
 Inicializar o Banco de Dados (Seed)
 
@@ -51,11 +53,13 @@ docker compose exec backend python manage.py migrate
 
 # Popular os planos iniciais (necessário para o registro)
 ```
+docker compose -p novo_projeto exec backend python manage.py seed_dados
 docker compose exec backend python manage.py shell -c "from api.models import Plano; Plano.objects.get_or_create(id=1, defaults={'nome': 'Premium', 'limite_lojas': 10, 'limite_imagens': 100, 'limite_api': 1000, 'espaco_armazenamento': 5000})"
 ```
 
 Acessos Locais
 Frontend: http://localhost:3000/login
+API (Django): http://localhost:8001
 ESCREVA PASSO A PASSO DESDE A CRIAÇÃO DAS CONTAS, CRIAÇÃO DE LOJA, COMPRAS, FATURAMENTO E TODA APLICAÇÃO DE FORMA LINEAR PARA EFETUAR OS TESTES
 
 Estrutura do Projeto
