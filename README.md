@@ -1,120 +1,66 @@
+# E-commerce Marketing BI SaaS
 
-Destruição: docker compose -p novo_projeto down -v
+Arquitetura Multi-Tenant para gestão de lojas virtuais com motor de faturamento, catálogo dinâmico e painel analítico.
 
-Remoção: cd .. && rm -rf ecommerce-marketing-bi-saas
-
-Extração: git clone https://github.com/braian-data/ecommerce-marketing-bi-saas.git
-
-Construção: cd ecommerce-marketing-bi-saas && docker compose -p novo_projeto up -d --build
-
-Migração: docker compose -p novo_projeto exec backend python manage.py migrate
-
-População: docker compose -p novo_projeto exec backend python manage.py seed_dados
-
-
-
-
-
-# Projeto Integrador: SaaS E-Commerce (Multi-Tenant)
-
-Plataforma Web B2B2C desenvolvida para a disciplina de Laboratório de Desenvolvimento de Software. O sistema utiliza uma arquitetura multi-tenant, permitindo que vários lojistas gerenciem seus próprios catálogos e vendas de forma isolada e segura.
-
-> **Status:** Projeto em andamento | Equipa: 15 colaboradores.
+## Stack Tecnológica
+* **Frontend:** Next.js (App Router), React, Tailwind CSS, Axios.
+* **Backend:** Python 3.11, Django 5.x, Django Rest Framework, SimpleJWT.
+* **Banco de Dados:** PostgreSQL (Relacional).
+* **Infraestrutura:** Docker & Docker Compose.
 
 ---
 
-## Galeria do Projeto
-<details>
-<summary>Clique para visualizar as telas do sistema</summary>
+## Protocolo de Instalação e Execução Local (Clean Room)
 
-### Gestão do Lojista
-![Dashboard Vendedor](https://github.com/user-attachments/assets/43a22018-3203-4d85-b7cc-6baa3963aeb5)
-![Gestão de Loja](https://github.com/user-attachments/assets/89b5525c-f74b-48f4-8616-ca8180d0af9e)
+Para garantir a replicação exata do ambiente de produção localmente, siga os passos estritamente na ordem apresentada.
 
-### Fluxo de Compra (Cliente)
-![Vitrine](https://github.com/user-attachments/assets/4dc19913-eb64-458e-a699-b5f1bf7f573d)
-![Checkout](https://github.com/user-attachments/assets/2d89e99b-7084-436c-9d2d-f07739f20ae2)
+### 1. Clonagem do Repositório
 
-*(Adicione aqui as outras imagens de forma organizada)*
-</details>
-
----
-
-## Tecnologias Utilizadas
-
-* **Backend:** Python, Django REST Framework, PostgreSQL
-* **Frontend:** React, Next.js, TailwindCSS
-* **Autenticação:** JWT (JSON Web Tokens)
-* **Infraestrutura:** Docker, Docker Compose
-* **Metodologia:** Ágil (Scrum/Kanban)
-
----
-
-## Como Executar o Projeto
-
-Certifique-se de ter o **Docker** e o **Docker Compose** instalados na sua máquina.
-
-### 1. Clonar e subir o ambiente
-```bash
 git clone [https://github.com/braian-data/ecommerce-marketing-bi-saas.git](https://github.com/braian-data/ecommerce-marketing-bi-saas.git)
+cd ecommerce-marketing-bi-saas 
 
-cd ecommerce-marketing-bi-saas
-docker compose -p novo_projeto up -d --build
-docker compose -p novo_projeto ps
-docker compose -p novo_projeto exec backend python manage.py migrate
-```
-Inicializar o Banco de Dados (Seed)
+## Injeção de Variáveis de Ambiente
 
-# Rodar migrações
-docker compose exec backend python manage.py migrate
+O repositório não inclui o arquivo .env por questões de segurança. Execute o comando abaixo na raiz do projeto para gerar as configurações de roteamento do banco de dados:
 
-# Popular os planos iniciais (necessário para o registro)
-```
-docker compose -p novo_projeto exec backend python manage.py shell -c "from api.models import Plano; Plano.objects.get_or_create(id=1, defaults={'nome': 'Premium', 'limite_lojas': 10, 'limite_imagens': 100, 'limite_api': 1000, 'espaco_armazenamento': 5000})"
-docker compose -p novo_projeto exec backend python manage.py seed_dados
-```
+    cat <<EOF > .env
+    DEBUG=True
+    DATABASE_URL=postgres://postgres:postgres@db:5432/ecommerce_db
+    NEXT_PUBLIC_API_URL=http://localhost:8001
+    EOF
 
-Acessos Locais
-Frontend: http://localhost:3000/login
-API (Django): http://localhost:8001
-ESCREVA PASSO A PASSO DESDE A CRIAÇÃO DAS CONTAS, CRIAÇÃO DE LOJA, COMPRAS, FATURAMENTO E TODA APLICAÇÃO DE FORMA LINEAR PARA EFETUAR OS TESTES
+## Orquestração de Contêineres (Build)
 
-Estrutura do Projeto
-ADICIONE A ESTRUTURA AQUI
+Construa as imagens e levante a rede isolada:
 
-Colaboradores
-Projeto desenvolvido por uma equipe dedicada de 15 estudantes.
-ADICIONAR COLABORADORES
-PO+DEV: Braian Soares Mesquita (https://github.com/braian-data)
-SM+DEV: Caio Camos (https://github.com/raiocamos)
-DEVS: , , ,
+    docker compose up -d --build
 
+(Aguarde aproximadamente 30 segundos para o banco de dados inicializar completamente).
 
+## Construção do Esquema Relacional (DDL)
 
+Crie as tabelas no PostgreSQL:
 
+    docker compose exec backend python manage.py migrate
 
+## Injeção de Dependências e Dados (Seed)
 
+A arquitetura SaaS exige a existência de um Plano base para o roteamento de limites. Execute os comandos abaixo para injetar a regra de negócio e popular a base com dados de teste:
 
+    docker compose exec backend python manage.py shell -c "from api.models import Plano; Plano.objects.get_or_create(id=1, defaults={'nome': 'Premium', 'limite_lojas': 10, 'limite_imagens': 100, 'limite_api': 1000, 'espaco_armazenamento': 5000})"
 
+    docker compose exec backend python manage.py seed_dados
 
+## Endpoints de Acesso
 
+    Painel do Lojista (Frontend): http://localhost:3000/login
 
+    API Root (Backend): http://localhost:8001/api/
 
+## Comandos de Manutenção
 
+Zerar o Banco de Dados (Hard Reset):
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    docker compose down -v
+    docker system prune -f
 

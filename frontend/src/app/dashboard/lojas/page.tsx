@@ -57,7 +57,17 @@ export default function LojasDashboard() {
 
   return (
     <div className="p-8 bg-gray-900 min-h-screen text-white">
-      <h1 className="text-2xl font-bold mb-6">Minhas Lojas</h1>
+      
+      {/* Novo Cabeçalho com Navegação */}
+      <div className="mb-6 flex items-center gap-4">
+        <Link 
+          href="/dashboard" 
+          className="bg-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-600 transition-colors font-medium"
+        >
+          &larr; Voltar ao Painel
+        </Link>
+        <h1 className="text-2xl font-bold">Minhas Lojas</h1>
+      </div>
       
       <form onSubmit={handleCreate} className="mb-8 p-4 bg-gray-800 rounded">
         <input 

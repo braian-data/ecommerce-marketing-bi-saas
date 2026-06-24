@@ -1,12 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.db import transaction
-from django.db.models import Q, F # AQUI ESTÁ O Q!
+from django.db.models import Q, F
 from decimal import Decimal
 import uuid
 from django.shortcuts import get_object_or_404
@@ -223,7 +224,8 @@ class ProdutoLojaAPIView(APIView):
         if not Loja.objects.filter(id=loja_id, conta_id=vendedor_id).exists():
             return Response({'erro': 'Acesso negado'}, status=status.HTTP_403_FORBIDDEN)
             
-        produtos = Produto.objects.filter(loja_id=loja_id)
+        # Filtro estrito: Retorna apenas produtos da loja que não foram deletados
+        produtos = Produto.objects.filter(loja_id=loja_id, ativo=True) 
         return Response(ProdutoSerializer(produtos, many=True).data)
 
     def post(self, request, loja_id):
@@ -428,5 +430,34 @@ class ContaCRUDAPIView(APIView):
 class ProdutoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
-    permission_classes = [AllowAny]
-    authentication_classes = []
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # Sobrescrita do método de destruição para Soft Delete
+    def perform_destroy(self, instance):
+        instance.ativo = False
+        instance.save()
+
+class UsuarioMeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retorna, atualiza ou deleta os dados do lojista atualmente autenticado.
+    """
+    permission_classes = [IsAuthenticated]
+    # Caso não utilize um serializer customizado, utilize o padrão do Django:
+    # serializer_class = UserSerializer 
+
+    def get_object(self):
+        # Retorna estritamente o usuário dono do token da requisição
+        return self.request.user
+
+class PedidoListView(generics.ListCreateAPIView):
+    """
+    Lista e cria pedidos vinculados a uma loja específica.
+    """
+    serializer_class = PedidoSerializer
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        loja_id = self.kwargs.get('loja_id')
+        return Pedido.objects.filter(loja_id=loja_id)

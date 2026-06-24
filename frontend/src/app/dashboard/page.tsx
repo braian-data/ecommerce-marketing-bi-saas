@@ -24,12 +24,25 @@ export default function DashboardLojista() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-7xl mx-auto">
-        <header className="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b border-gray-700 pb-4 gap-4">
           <div>
             <h1 className="text-3xl font-bold">Painel do Vendedor</h1>
             <p className="text-gray-400 text-sm mt-1">Gestão Central de Lojas (SaaS)</p>
           </div>
-          <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium">Encerrar Sessão</button>
+          <div className="flex items-center gap-3">
+            <Link 
+              href="/dashboard/configuracoes" 
+              className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Configurar Conta
+            </Link>
+            <button 
+              onClick={handleLogout} 
+              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Encerrar Sessão
+            </button>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

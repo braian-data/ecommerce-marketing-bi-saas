@@ -99,6 +99,21 @@ export default function LojaDetalhes() {
     }
   };
 
+  const handleExcluirProduto = async (produtoId: number) => {
+    if (!window.confirm("Confirmar exclusão deste produto do catálogo?")) return;
+    
+    const token = localStorage.getItem("access_token");
+    try {
+      await axios.delete(`http://localhost:8001/api/produtos/${produtoId}/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Recarrega o grid após inativar
+      fetchDados();
+    } catch (error) {
+      alert("Falha na requisição de exclusão de produto.");
+    }
+  };
+
   useEffect(() => { 
     if (lojaId) fetchDados(); 
   }, [lojaId]);
@@ -204,8 +219,14 @@ export default function LojaDetalhes() {
                         <p className="text-sm text-gray-300 mt-1 line-clamp-2">{prod.descricao}</p>
                         <div className="mt-4 flex justify-between items-center">
                           <span className="text-green-400 font-bold">R$ {parseFloat(valorBruto).toFixed(2)}</span>
-                          <button className="text-xs bg-red-900 text-red-100 px-2 py-1 rounded hover:bg-red-700 transition-colors">Excluir</button>
-                        </div>
+                          
+                          <button 
+                            onClick={() => handleExcluirProduto(prod.id)}
+                            className="text-xs bg-red-900 text-red-100 px-2 py-1 rounded hover:bg-red-700 transition-colors"
+                          >
+                            Excluir
+                          </button>
+                          </div>
                       </div>
                     </div>
                   );
