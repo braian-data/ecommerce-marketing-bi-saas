@@ -48,6 +48,7 @@ class Produto(models.Model):
     descricao = models.TextField()
     preco = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     imagem = models.ImageField(upload_to='produtos/', null=True, blank=True)
+    ativo = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'produto'

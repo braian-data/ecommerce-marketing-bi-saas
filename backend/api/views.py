@@ -2,23 +2,28 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.exceptions import AuthenticationFailed
-from django.db.models import Q
-import uuid
 from django.db import transaction
-from decimal import Decimal, InvalidOperation
-from .serializers import VitrineSerializer # Garanta esta importação
-from django.db.models import F
-from .models import Plano, ContaVendedor, ClienteFinal, Loja, Produto, Carrinho, ItemCarrinho
-from .serializers import (
-    PlanoSerializer, RegistroClienteSerializer, 
-    RegistroVendedorSerializer, LoginSerializer, LojaSerializer, 
-    ProdutoSerializer, CheckoutSerializer
+from django.db.models import Q, F # AQUI ESTÁ O Q!
+from decimal import Decimal
+import uuid
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
+
+# Importações de Modelos
+from .models import (
+    Plano, ContaVendedor, ClienteFinal, Loja, Produto, Carrinho, 
+    ItemCarrinho, Pedido, ItemPedido, VariacaoSKU, EventoBI
 )
 
+# Importações de Serializers
+from .serializers import (
+    VitrineSerializer, LoginSerializer, LojaSerializer, 
+    ProdutoSerializer, CheckoutSerializer, PedidoSerializer, PlanoSerializer,
+    RegistroClienteSerializer, RegistroVendedorSerializer
+)
 class CustomJWTAuthentication(JWTAuthentication):
     def get_user(self, validated_token):
         user_id = validated_token.get('user_id')
@@ -47,6 +52,7 @@ class VitrineGlobalAPIView(APIView):
 class CheckoutAPIView(APIView):
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     @transaction.atomic
     def post(self, request):
         if request.auth.payload.get('role') != 'CLIENTE':
@@ -64,7 +70,7 @@ class CheckoutAPIView(APIView):
         if cliente.saldo < total:
             return Response({'erro': f'Saldo insuficiente. Necessário: R$ {total}'}, status=status.HTTP_402_PAYMENT_REQUIRED)
 
-        # 2. Transferência de Custódia (I/O de Capital)
+        # 2. Transferência de Custódia
         cliente.saldo -= total
         cliente.save()
         
@@ -72,10 +78,38 @@ class CheckoutAPIView(APIView):
         vendedor.saldo += total
         vendedor.save()
 
-        # 3. Purga do Carrinho processado
+        # 3. CRIAÇÃO DO REGISTRO DE PEDIDO (A parte que faltava)
+        pedido = Pedido.objects.create(
+            cliente=cliente,
+            loja=carrinho.loja,
+            status='PAGO',
+            valor_total=total
+        )
+
+        # 4. CRIAÇÃO DOS ITENS DO PEDIDO
+        for item in carrinho.itens.all():
+            # Tenta pegar uma SKU existente ou cria uma genérica para o item
+            sku = VariacaoSKU.objects.filter(produto=item.produto).first()
+            if not sku:
+                sku = VariacaoSKU.objects.create(
+                    id_sku=f"S-{item.produto.id}",
+                    produto=item.produto,
+                    preco_venda=item.produto.preco,
+                    custo=0
+                )
+            
+            ItemPedido.objects.create(
+                pedido=pedido,
+                sku=sku,
+                quantidade=item.quantidade,
+                preco_venda_congelado=item.produto.preco,
+                preco_custo_congelado=0
+            )
+
+        # 5. Purga do Carrinho processado
         carrinho.delete()
 
-        return Response({'mensagem': 'Pagamento aprovado. Saldo atualizado.'}, status=status.HTTP_200_OK)
+        return Response({'mensagem': 'Pagamento aprovado. Pedido registrado.'}, status=status.HTTP_201_CREATED)
 class LojaManagerAPIView(APIView):
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -106,38 +140,41 @@ class LojaManagerAPIView(APIView):
 
 class CustomLoginAPIView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = []
+
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
         identificador = serializer.validated_data['identificador'].strip()
         tipo_usuario = serializer.validated_data['tipo_usuario'].upper().strip()
         senha = serializer.validated_data['senha']
-        
+
         usuario_db = None
-        user_id = None
-        senha_valida = False
-        
+
         if tipo_usuario == 'ADMIN':
             usuario_db = ContaVendedor.objects.filter(Q(email_adm__iexact=identificador) | Q(login__iexact=identificador)).first()
-            if usuario_db:
-                user_id = usuario_db.id
-                senha_valida = check_password(senha, usuario_db.senha)
         elif tipo_usuario == 'CLIENTE':
-            usuario_db = ClienteFinal.objects.filter(cpf=identificador).first()
-            if usuario_db:
-                user_id = usuario_db.cpf
-                senha_valida = check_password(senha, usuario_db.senha)
+            # NÓ CORRIGIDO: Busca híbrida. Autoriza a localização no SGBD por CPF ou E-mail da entidade.
+            usuario_db = ClienteFinal.objects.filter(Q(cpf=identificador) | Q(email__iexact=identificador)).first()
 
-        if not usuario_db or not senha_valida:
-            return Response({'erro': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
+        if not usuario_db:
+            return Response({'erro': 'Credenciais inválidas (usuário não encontrado).'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not check_password(senha, usuario_db.senha):
+            return Response({'erro': 'Credenciais inválidas (senha incorreta).'}, status=status.HTTP_401_UNAUTHORIZED)
 
         refresh = RefreshToken()
-        refresh['user_id'] = str(user_id)
+        refresh['user_id'] = str(usuario_db.id if tipo_usuario == 'ADMIN' else usuario_db.cpf)
         refresh['role'] = tipo_usuario
-        return Response({'access': str(refresh.access_token), 'refresh': str(refresh), 'role': tipo_usuario}, status=status.HTTP_200_OK)
 
+        return Response({
+            'access': str(refresh.access_token), 
+            'refresh': str(refresh), 
+            'role': tipo_usuario
+        }, status=status.HTTP_200_OK)
+        
 class PlanoListAPIView(APIView):
     permission_classes = [AllowAny]
     def get(self, request): return Response(PlanoSerializer(Plano.objects.all(), many=True).data)
@@ -160,6 +197,8 @@ class RegistroVendedorAPIView(APIView):
     def post(self, request):
         serializer = RegistroVendedorSerializer(data=request.data)
         if not serializer.is_valid():
+            # AQUI ESTÁ O SEGREDO: O Django imprime o erro no log do backend
+            print(f"DEBUG ERRO SERIALIZER: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response({'mensagem': 'Administrador registrado.'}, status=status.HTTP_201_CREATED)
@@ -306,3 +345,88 @@ class CarrinhoAPIView(APIView):
             return Response({'mensagem': 'Item adicionado ao carrinho com sucesso.'})
         except Produto.DoesNotExist:
             return Response({'erro': 'Produto inexistente.'}, status=status.HTTP_404_NOT_FOUND)
+
+class LojaPedidosAPIView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, loja_id):
+        vendedor_id = request.auth.payload.get('user_id')
+        from .models import Loja, Pedido
+        # Validação de segurança
+        if not Loja.objects.filter(id=loja_id, conta_id=vendedor_id).exists():
+            return Response({'erro': 'Acesso negado.'}, status=status.HTTP_403_FORBIDDEN)
+            
+        pedidos = Pedido.objects.filter(loja_id=loja_id).select_related('cliente', 'loja').order_by('-data_hora')
+        from .serializers import PedidoSerializer
+        return Response(PedidoSerializer(pedidos, many=True).data)
+    
+from django.contrib.auth.hashers import check_password, make_password
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
+class ContaCRUDAPIView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # PUT: Atualiza dados (Perfil ou Vendedor)
+    def put(self, request):
+        user_id = request.auth.payload.get('user_id')
+        role = request.auth.payload.get('role')
+
+        # 1. Resolução da Instância
+        if role == 'ADMIN':
+            user = get_object_or_404(ContaVendedor, id=user_id)
+        else:
+            user = get_object_or_404(ClienteFinal, cpf=user_id)
+
+        # 2. Extração Paramétrica Estrita (Proteção contra injeção de saldo)
+        email_novo = request.data.get('email')
+        senha_atual = request.data.get('senha_atual')
+        nova_senha = request.data.get('nova_senha') or request.data.get('senha')
+
+        # 3. Validação Criptográfica da Senha Atual (Requisito de segurança)
+        if senha_atual and not check_password(senha_atual, user.senha):
+            return Response({'erro': 'A senha atual informada está incorreta.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # 4. Mutação de Senha
+        if nova_senha:
+            user.senha = make_password(nova_senha)
+
+        # 5. Mutação de E-mail (Resolução do conflito de Nomenclatura)
+        if email_novo:
+            if role == 'ADMIN':
+                user.email_adm = email_novo  # Coluna correta do Vendedor
+            else:
+                user.email = email_novo      # Coluna correta do Cliente
+
+        # 6. Persistência
+        user.save()
+        
+        return Response({
+            'mensagem': 'Operação de atualização concluída.',
+            'email_atualizado': user.email_adm if role == 'ADMIN' else user.email
+        }, status=status.HTTP_200_OK)
+
+    # DELETE: Remove a conta
+    def delete(self, request):
+        user_id = request.auth.payload.get('user_id')
+        role = request.auth.payload.get('role')
+
+        # Extração tipada por Entidade
+        if role == 'ADMIN':
+            user = get_object_or_404(ContaVendedor, id=user_id)
+        else:
+            user = get_object_or_404(ClienteFinal, cpf=user_id)
+
+        user.delete()
+        return Response({'mensagem': 'Conta deletada com sucesso.'}, status=status.HTTP_204_NO_CONTENT)
+    
+class ProdutoDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Produto.objects.all()
+    serializer_class = ProdutoSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
