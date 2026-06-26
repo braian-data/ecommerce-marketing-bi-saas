@@ -23,11 +23,18 @@ cd ecommerce-marketing-bi-saas
 
 O repositório não inclui o arquivo .env por questões de segurança. Execute o comando abaixo na raiz do projeto para gerar as configurações de roteamento do banco de dados:
 
-    cat <<EOF > .env
-    DEBUG=True
-    DATABASE_URL=postgres://postgres:postgres@db:5432/ecommerce_db
-    NEXT_PUBLIC_API_URL=http://localhost:8001
-    EOF
+ambiente POSIX
+```cat <<EOF > .env
+DEBUG=True
+DATABASE_URL=postgres://postgres:postgres@db:5432/ecommerce_db
+NEXT_PUBLIC_API_URL=http://localhost:8001
+EOF
+
+Criação Manual (Recomendado para todos os SOs)
+```env
+DEBUG=True
+DATABASE_URL=postgres://postgres:postgres@db:5432/ecommerce_db
+NEXT_PUBLIC_API_URL=http://localhost:8001    
 
 ## Orquestração de Contêineres (Build)
 
