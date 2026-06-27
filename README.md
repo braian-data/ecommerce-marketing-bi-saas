@@ -5,7 +5,7 @@ Arquitetura **Multi-Tenant** para gestão de lojas virtuais com motor de faturam
 
 ---
 
-# 🚀 Stack Tecnológica
+# Stack Tecnológica
 
 ## Frontend
 
@@ -32,7 +32,7 @@ Arquitetura **Multi-Tenant** para gestão de lojas virtuais com motor de faturam
 
 ---
 
-# 📁 Estrutura do Projeto
+# Estrutura do Projeto
 
 ```text
 ecommerce-marketing-bi-saas/
@@ -56,7 +56,7 @@ ecommerce-marketing-bi-saas/
 
 ---
 
-# ⚙️ Instalação e Execução Local
+# Instalação e Execução Local
 
 Siga os passos abaixo para executar o projeto localmente.
 
@@ -123,7 +123,7 @@ docker compose exec backend python manage.py seed_dados
 
 ---
 
-# 🌐 Endpoints
+# Endpoints
 
 | Serviço | URL |
 |---------|-----|
@@ -143,7 +143,7 @@ docker system prune -f
 
 ---
 
-# 👥 Equipe
+# Equipe
 
 ## Product Owner + Developer
 
