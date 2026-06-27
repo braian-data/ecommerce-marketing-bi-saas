@@ -171,7 +171,7 @@ docker system prune -f
 
 ---
 
-# 📸 Telas do Sistema
+#  Telas do Sistema
 
 ## Dashboard do Vendedor
 
@@ -191,7 +191,7 @@ docker system prune -f
 
 ---
 
-# 📄 Documentação
+#  Documentação
 
 A documentação completa da arquitetura, regras de negócio e fluxo da aplicação encontra-se nos arquivos abaixo:
 
