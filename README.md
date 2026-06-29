@@ -175,7 +175,7 @@ docker system prune -f
 
 A documentação completa da arquitetura, regras de negócio e fluxo da aplicação encontra-se nos arquivos abaixo:
 
-- **Relatório Final:** [`docs/relatorio_final.pdf`](docs/relatorio_final.pdf)
-- **Mini Mundo:** [`docs/MiniMundo.docx`](docs/MiniMundo.docx)
-- **Modelo Conceitual:** [`docs/Conceitual.brM3`](docs/Conceitual.brM3)
+- **Relatório Final:** docs/TRABALHO%20DESENVOLVIMENTO%20DE%20SOFTWARE.docx
+- **Mini Mundo:** docs/MiniMundo.docx
+- **Modelo Conceitual:** docs/Conceitual.brM3
 ````
