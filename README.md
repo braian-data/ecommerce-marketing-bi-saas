@@ -171,25 +171,53 @@ docker system prune -f
 
 ---
 
-#  Telas do Sistema
-
+# Telas do Sistema
 
 <img width="921" height="516" alt="image" src="https://github.com/user-attachments/assets/68f9320d-f85b-42f8-a013-8f46bd928b83" />
-Interface de Autenticação. Fonte: Elaborada pelos autores.
+
+*Interface de Autenticação. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="917" height="506" alt="image" src="https://github.com/user-attachments/assets/5d3fff95-4304-4f8a-8122-4b8240069218" />
-Interface de Registro. Fonte: Elaborada pelos autores.
+
+*Interface de Registro. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="859" height="447" alt="image" src="https://github.com/user-attachments/assets/eadc9349-db06-47ad-9b63-cc500060e514" />
-Dashboard Administrativo B2B. Fonte: Elaborada pelos autores.
+
+*Dashboard Administrativo B2B. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="866" height="419" alt="image" src="https://github.com/user-attachments/assets/4447bb4a-1b18-42db-a805-3076f7df7eda" />
-Módulo de Configurações do Lojista. Fonte: Elaborada pelos autores.
+
+*Módulo de Configurações do Lojista. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="878" height="486" alt="image" src="https://github.com/user-attachments/assets/94129d43-465f-4aa4-9b6f-31d2edfffc77" />
-Gestão de Catálogo e Motor de Deleção. Fonte: Elaborada pelos autores.
+
+*Gestão de Catálogo e Motor de Deleção. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="875" height="414" alt="image" src="https://github.com/user-attachments/assets/38bec482-a70d-4023-b1f4-4db14b6ef4a4" />
-Vitrine Pública do Cliente Final B2C. Fonte: Elaborada pelos autores.
+
+*Vitrine Pública do Cliente Final B2C. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="864" height="448" alt="image" src="https://github.com/user-attachments/assets/0c2237da-de6f-4e7c-9a11-6eec9f8a77da" />
-Fluxo de Checkout e Carrinho de Compras. Fonte: Elaborada pelos autores.
+
+*Fluxo de Checkout e Carrinho de Compras. Fonte: Elaborada pelos autores.*
+
+---
+
 <img width="858" height="436" alt="image" src="https://github.com/user-attachments/assets/4dedb66e-ca46-4669-9fe7-bc6611cff31b" />
-Painel Analítico Pós-Transação (BI). Fonte: Elaborada pelos autores.
+
+*Painel Analítico Pós-Transação (BI). Fonte: Elaborada pelos autores.*
 
 #  Documentação
 
