@@ -31,9 +31,9 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', # MOVIDO PARA O TOPO
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
