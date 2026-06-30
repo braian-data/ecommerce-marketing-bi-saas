@@ -1,14 +1,12 @@
 // frontend/src/lib/api.ts
 import axios from 'axios';
 
-// Isso diz ao código: "Use a variável de ambiente (no Netlify) ou, se não achar, use a Render"
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "https://ecommerce-api-kh18.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://ecommerce-api-kh18.onrender.com";
 
-const api = axios.create({
-  baseURL: baseURL,
+// ALTERAÇÃO: Adicione 'export' aqui e remova o 'export default api' lá embaixo
+export const api = axios.create({
+  baseURL: API_URL,
 });
-
-export default api;
 
 export const getImageUrl = (path: string) => {
   if (!path) return '';
@@ -16,3 +14,5 @@ export const getImageUrl = (path: string) => {
   const BASE = process.env.NEXT_PUBLIC_API_URL || "https://ecommerce-api-kh18.onrender.com";
   return `${BASE}${path}`;
 };
+
+// REMOVA a linha 'export default api;' que existia antes.
