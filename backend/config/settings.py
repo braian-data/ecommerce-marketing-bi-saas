@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-yis=&c&f=nlc4y!o(vi3qn3tkaoegiiqydp6ki0mbjz5p1_b4+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', # MOVIDO PARA O TOPO
@@ -149,6 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://ecommercemarketingbisaas.netlify.app",
 ]   
 
 MEDIA_URL = '/media/'
