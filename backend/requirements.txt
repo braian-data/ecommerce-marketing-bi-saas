@@ -6,4 +6,4 @@ djangorestframework
 djangorestframework-simplejwt
 faker==18.3.0
 django-cors-headers
-Pillow>=10.0.0Pillow>=10.2.0
+Pillow>=10.2.0
