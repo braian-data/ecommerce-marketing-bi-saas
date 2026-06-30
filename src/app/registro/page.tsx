@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 
 export default function Registro() {
@@ -10,7 +10,7 @@ export default function Registro() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8001/api/registro-cliente/", formData);
+      await api.post("/api/registro-cliente/", formData);
       router.push("/login"); // Redireciona para o login após criar
     } catch (err) {
       alert("Erro ao registrar cliente.");

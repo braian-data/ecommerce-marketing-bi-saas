@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+// Importação centralizada. Verifique se o caminho coincide com onde você salvou seu arquivo api.ts
+import { api } from "@/lib/api"; 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ 
     identificador: "", 
     senha: "", 
-    tipo_usuario: "CLIENTE" // Valor base para a aba do select
+    tipo_usuario: "CLIENTE" 
   });
   const [statusReq, setStatusReq] = useState({ tipo: "", mensagem: "" });
 
@@ -23,16 +24,15 @@ export default function Login() {
     setStatusReq({ tipo: "info", mensagem: "Autenticando..." });
 
     try {
-      const urlBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
-      
-      // Payload restaurado para o padrão exato exigido pelo Backend Customizado
+      // urlBase removida: a instância 'api' já sabe para onde enviar
       const payload = {
         identificador: formData.identificador,
         senha: formData.senha,
         tipo_usuario: formData.tipo_usuario
       };
 
-      const response = await axios.post(`${urlBase}/api/auth/login/`, payload);
+      // Chamada usando a instância centralizada 'api'
+      const response = await api.post("/api/auth/login/", payload);
       
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
@@ -44,7 +44,7 @@ export default function Login() {
         if (formData.tipo_usuario === "ADMIN") {
           router.push("/dashboard");
         } else {
-          router.push("/vitrine"); // Rota B2C a ser construída
+          router.push("/vitrine");
         }
       }, 1500);
 
@@ -89,9 +89,6 @@ export default function Login() {
           <button type="submit" className="w-full py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 mt-6">
             Entrar
           </button>
-          <Link href="/registro" className="text-blue-400 text-sm mt-4 block text-center">
-          Ainda não possui conta? Criar Conta
-          </Link>
         </form>
 
         <div className="mt-6 text-center">

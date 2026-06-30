@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+// Certifique-se de que o caminho abaixo aponta para o seu arquivo api.ts
+import { api } from "@/lib/api"; 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function RegistroSaaS() {
   const router = useRouter();
@@ -21,8 +21,8 @@ export default function RegistroSaaS() {
   });
 
   useEffect(() => {
-    const urlBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
-    axios.get(`${urlBase}/api/planos/`)
+    // Refatorado: Usando a instância 'api' centralizada
+    api.get("/api/planos/")
       .then(response => {
         setPlanos(response.data);
         if (Array.isArray(response.data) && response.data.length > 0) {
@@ -43,14 +43,15 @@ export default function RegistroSaaS() {
     setStatusReq({ tipo: "info", mensagem: "Processando registro..." });
 
     try {
-      const urlBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
+      // Refatorado: Caminhos relativos apenas
       const endpoint = tipoConta === "LOJISTA" ? "/api/registro-vendedor/" : "/api/registro-cliente/";
       
       const payload = tipoConta === "LOJISTA" 
         ? { plano: formData.plano, email_adm: formData.email_adm, login: formData.login, senha: formData.senha }
         : { cpf: formData.cpf, nome: formData.nome, email: formData.email_adm, senha: formData.senha };
 
-      await axios.post(`${urlBase}${endpoint}`, payload);
+      // Refatorado: Usando api.post
+      await api.post(endpoint, payload);
       
       setStatusReq({ tipo: "sucesso", mensagem: "Conta criada com sucesso!" });
       setTimeout(() => router.push("/login"), 2000);

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+// Importação da nossa instância centralizada (já pronta para futuras chamadas de API)
+import { api } from "@/lib/api"; 
 
 export default function DashboardLojista() {
   const router = useRouter();
@@ -10,8 +12,13 @@ export default function DashboardLojista() {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    if (!token || localStorage.getItem("user_role") !== "ADMIN") router.push("/login");
-    else setCarregando(false);
+    
+    // Verificação de segurança local
+    if (!token || localStorage.getItem("user_role") !== "ADMIN") {
+      router.push("/login");
+    } else {
+      setCarregando(false);
+    }
   }, [router]);
 
   const handleLogout = () => {
@@ -19,7 +26,13 @@ export default function DashboardLojista() {
     router.push("/login");
   };
 
-  if (carregando) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">Autenticando sessão...</div>;
+  if (carregando) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
+        Autenticando sessão...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
@@ -49,7 +62,9 @@ export default function DashboardLojista() {
           <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
             <h3 className="text-xl font-semibold mb-2 text-blue-400">1. Gestão de Lojas</h3>
             <p className="text-gray-400 text-sm mb-4">Criação de Tenants (CNPJ único) e monitorização de limites do plano atual.</p>
-            <Link href="/dashboard/lojas" className="text-blue-500 hover:underline text-sm font-medium block">Aceder Módulo &rarr;</Link>
+            <Link href="/dashboard/lojas" className="text-blue-500 hover:underline text-sm font-medium block">
+              Aceder Módulo &rarr;
+            </Link>
           </div>
 
           <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 opacity-50">

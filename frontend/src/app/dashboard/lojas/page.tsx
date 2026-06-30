@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Link from "next/link";
+// Importação centralizada. Se o erro de import persistir, 
+// mude para: import { api } from "../../../lib/api";
+import { api } from "@/lib/api"; 
 
 export default function LojasDashboard() {
   const [lojas, setLojas] = useState([]);
@@ -17,7 +19,9 @@ export default function LojasDashboard() {
     }
 
     try {
-      const response = await axios.get("http://localhost:8001/api/lojas/", {
+      // Usando 'api' (que já tem a URL base configurada)
+      // O caminho é relativo, começando com /api/
+      const response = await api.get("/api/lojas/", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setLojas(response.data);
@@ -35,7 +39,8 @@ export default function LojasDashboard() {
     if (!token) return alert("Token ausente. Faça login novamente.");
 
     try {
-      await axios.post("http://localhost:8001/api/lojas/", formData, {
+      // Usando 'api' em vez de axios direto
+      await api.post("/api/lojas/", formData, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -58,7 +63,6 @@ export default function LojasDashboard() {
   return (
     <div className="p-8 bg-gray-900 min-h-screen text-white">
       
-      {/* Novo Cabeçalho com Navegação */}
       <div className="mb-6 flex items-center gap-4">
         <Link 
           href="/dashboard" 

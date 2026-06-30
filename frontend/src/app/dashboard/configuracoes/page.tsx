@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
+// Importando a instância centralizada que criamos
+import { api } from "@/lib/api"; 
 
 export default function ConfiguracoesConta() {
   const router = useRouter();
@@ -22,11 +23,12 @@ export default function ConfiguracoesConta() {
     const token = localStorage.getItem("access_token");
 
     try {
-      const response = await axios.put("http://localhost:8001/api/usuario/me/", formData, {
+      // Usando 'api' em vez de 'axios'. A URL base já está configurada nele.
+      const response = await api.put("/api/usuario/me/", formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStatusReq({ tipo: "sucesso", mensagem: response.data.mensagem || "Conta atualizada com sucesso." });
-      setFormData({ email: "", senha_atual: "", nova_senha: "" }); // Limpa senhas por segurança
+      setFormData({ email: "", senha_atual: "", nova_senha: "" });
     } catch (error: any) {
       const msgErro = error.response?.data?.erro || "Erro ao atualizar dados.";
       setStatusReq({ tipo: "erro", mensagem: msgErro });
@@ -41,7 +43,8 @@ export default function ConfiguracoesConta() {
     const token = localStorage.getItem("access_token");
 
     try {
-      await axios.delete("http://localhost:8001/api/usuario/me/", {
+      // Usando 'api' em vez de 'axios'
+      await api.delete("/api/usuario/me/", {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Sua conta e lojas foram deletadas permanentemente.");

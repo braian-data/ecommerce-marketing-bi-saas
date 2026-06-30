@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 
 export default function VitrineCliente() {
@@ -20,7 +20,7 @@ export default function VitrineCliente() {
 
     const fetchProdutos = async () => {
       try {
-        const res = await axios.get("http://localhost:8001/api/produtos/", {
+        const res = await api.get("/api/produtos/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProdutos(res.data);

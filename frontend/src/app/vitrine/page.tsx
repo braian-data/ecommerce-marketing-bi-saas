@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+// Importação centralizada (api + helper de imagem)
+import { api, getImageUrl } from "@/lib/api"; 
 import { useRouter } from "next/navigation";
 
 export default function VitrineGlobal() {
@@ -16,10 +17,9 @@ export default function VitrineGlobal() {
 
   const getToken = () => localStorage.getItem("access_token");
 
-  // Busca catálogo global (Público)
   const fetchCatalogo = async () => {
     try {
-      const response = await axios.get("http://localhost:8001/api/vitrine/");
+      const response = await api.get("/api/vitrine/");
       setProdutos(response.data);
     } catch (error) {
       console.error("Erro de requisição catálogo:", error);
@@ -28,12 +28,11 @@ export default function VitrineGlobal() {
     }
   };
 
-  // Busca carteira e carrinho (Autenticado)
   const fetchEstadoCliente = async () => {
     const token = getToken();
     if (!token) return;
     try {
-      const response = await axios.get("http://localhost:8001/api/carrinho/", {
+      const response = await api.get("/api/carrinho/", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSaldo(response.data.saldo_disponivel);
@@ -48,7 +47,6 @@ export default function VitrineGlobal() {
     fetchEstadoCliente();
   }, []);
 
-  // I/O: Adicionar ao Carrinho
   const handleComprar = async (produtoId: number) => {
     const token = getToken();
     if (!token) {
@@ -58,7 +56,7 @@ export default function VitrineGlobal() {
     }
 
     try {
-      await axios.post("http://localhost:8001/api/carrinho/", 
+      await api.post("/api/carrinho/", 
         { produto_id: produtoId, quantidade: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -69,7 +67,6 @@ export default function VitrineGlobal() {
     }
   };
 
-  // I/O: Simulação de Depósito Fictício
   const handleDeposito = async () => {
     const token = getToken();
     if (!token) return alert("Sessão expirada.");
@@ -81,7 +78,7 @@ export default function VitrineGlobal() {
     if (isNaN(valor) || valor <= 0) return alert("Valor numérico inválido.");
 
     try {
-      await axios.post("http://localhost:8001/api/carteira/deposito/",
+      await api.post("/api/carteira/deposito/",
         { valor: valor },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -91,15 +88,14 @@ export default function VitrineGlobal() {
     }
   };
 
-  // I/O: Processamento de Checkout
   const handleCheckout = async (carrinhoId: number) => {
     const token = getToken();
     try {
-      await axios.post("http://localhost:8001/api/checkout/", 
+      await api.post("/api/checkout/", 
         { carrinho_id: carrinhoId, metodo_pagamento: 'PIX' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("Pagamento aprovado! O saldo foi deduzido da sua carteira e transferido para o lojista.");
+      alert("Pagamento aprovado!");
       fetchEstadoCliente(); 
     } catch (error: any) {
       alert(error.response?.data?.erro || "Falha na transação de checkout.");
@@ -111,8 +107,7 @@ export default function VitrineGlobal() {
     router.push("/login");
   };
 
-  // Cálculo de itens totais no badge
-  const totalItensCarrinho = carrinhos.reduce((acc, car: any) => 
+  const totalItensCarrinho = carrinhos.reduce((acc: number, car: any) => 
     acc + car.itens.reduce((sum: number, item: any) => sum + item.quantidade, 0), 0
   );
 
@@ -154,7 +149,8 @@ export default function VitrineGlobal() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {produtos.map((prod: any) => {
-              const urlImagem = prod.imagem ? (prod.imagem.startsWith('http') ? prod.imagem : `http://localhost:8001${prod.imagem}`) : null;
+              // Correção aqui: Chamando a função, não string template
+              const urlImagem = getImageUrl(prod.imagem);
 
               return (
                 <div key={prod.id} className="bg-gray-800 rounded border border-gray-700 overflow-hidden flex flex-col hover:border-blue-500 transition-colors shadow-lg">
@@ -211,7 +207,6 @@ export default function VitrineGlobal() {
                       </div>
                     ))}
                     
-                    {/* Bloco de Checkout aninhado corretamente dentro do map de carrinhos */}
                     <div className="mt-4 pt-3 border-t border-gray-600 flex flex-col gap-3">
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400 text-sm">Total da Loja:</span>
@@ -224,12 +219,10 @@ export default function VitrineGlobal() {
                         Pagar Carrinho (R$ {parseFloat(car.total).toFixed(2)})
                       </button>
                     </div>
-
                   </div>
                 ))
               )}
             </div>
-            
           </div>
         </div>
       )}
